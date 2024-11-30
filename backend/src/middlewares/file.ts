@@ -7,7 +7,7 @@ import fs from 'fs'
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
 
-const newName = () => {
+const newName = (originalname:string) => {
     return String(
         Math.random() * 10000 +
             String(
@@ -15,7 +15,7 @@ const newName = () => {
                     Date.now() + Math.ceil(Math.random() * 100)
                 ).toISOString()
             )
-    ).replace(/[:,.,-]/g, '')
+    ).replace(/[:,.,-]/g, '')+extname(originalname)
 }
 
 const tempDir = join(
@@ -41,7 +41,7 @@ const storage = multer.diskStorage({
         file: Express.Multer.File,
         cb: FileNameCallback
     ) => {
-        cb(null, newName() + extname(file.originalname)) //file.originalname
+        cb(null, newName(file.originalname)) //file.originalname
     },
 })
 
@@ -61,14 +61,15 @@ const fileFilter = (
     if (!types.includes(file.mimetype)) {
         return cb(null, false)
     }
+    /*console.log('_req!!!!',_req.files,_req.file);
     if (
         file.size > fileSizeLimits.maxSize ||
-        file.size < fileSizeLimits.minSize
+        file.size <= fileSizeLimits.minSize
     ) {
         return cb(null, false)
     }
-
+*/
     return cb(null, true)
 }
 
-export default multer({ storage, fileFilter /*, limits: fileSizeLimits*/ })
+export default multer({ storage, fileFilter , limits: {fileSize:fileSizeLimits.maxSize}  })
