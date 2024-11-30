@@ -19,7 +19,7 @@ const app = express()
 
 console.log(corsOptions);
 
- app.use(rateLimit(rateLimiterOptions));
+app.use(rateLimit(rateLimiterOptions));
 
 app.use(cors(corsOptions));
 
