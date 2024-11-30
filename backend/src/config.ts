@@ -24,6 +24,8 @@ export const REFRESH_TOKEN = {
     },
 }
 
+// npm i express-rate-limit
+
 let corsOrigin: string | string[]
 if (process.env.ORIGIN_ALLOW) {
     corsOrigin =
@@ -35,10 +37,10 @@ if (process.env.ORIGIN_ALLOW) {
 }
 
 export const corsOptions = {
-    //origin: process.env.ORIGIN_ALLOW?.split(',')||'http://localhost',
+    // origin: process.env.ORIGIN_ALLOW?.split(',')||'http://localhost',
     origin: corsOrigin,
     credentials: true,
-    //optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+    // optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
 
@@ -46,7 +48,7 @@ export const corsOptions = {
 
 export const rateLimiterOptions = {
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 10, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
 	standardHeaders: true, // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
 	// store: ... , // Redis, Memcached, etc. See below.

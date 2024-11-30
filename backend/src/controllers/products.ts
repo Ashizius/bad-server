@@ -13,7 +13,7 @@ const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { page = 1, limit = 5 } = req.query
 
-        if (Number(limit)>10) {
+        if (Number(limit)>20) {
             return new BadRequestError('уменьшите количество выводимых товаров');
         }
 

@@ -10,7 +10,7 @@ import { corsOptions, DB_ADDRESS, rateLimiterOptions } from './config'
 import errorHandler from './middlewares/error-handler'
 // import serveStatic from './middlewares/serverStatic'
 import routes from './routes'
-import rateLimit from 'express-rate-limit'
+ import rateLimit from 'express-rate-limit'
 
 const { PORT = 3000 } = process.env
 
@@ -19,13 +19,11 @@ const app = express()
 
 console.log(corsOptions);
 
-app.use(rateLimit(rateLimiterOptions));
+ app.use(rateLimit(rateLimiterOptions));
 
 app.use(cors(corsOptions));
 
 app.use(cookieParser())
-
-//npm i express-rate-limit
 
 // app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }));
 // app.use(express.static(path.join(__dirname, 'public')));
@@ -35,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(urlencoded({ extended: true }))
 app.use(json())
 
-//app.options(corsOptions.origin, cors(corsOptions))
+// app.options(corsOptions.origin, cors(corsOptions))
 app.use(routes)
 app.use(errors())
 app.use(errorHandler)
