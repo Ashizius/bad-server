@@ -7,30 +7,29 @@ import ConflictError from '../errors/conflict-error'
 import NotFoundError from '../errors/not-found-error'
 import Product from '../models/product'
 import movingFile from '../utils/movingFile'
+import limitNumber from '../utils/limitNumber'
 
 // GET /product
 const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { page = 1, limit = 5 } = req.query
 
-        if (Number(limit)>20) {
-            return next(new BadRequestError('уменьшите количество выводимых товаров'))
-        }
+        const newLimit=limitNumber(Number(limit),20);
 
         const options = {
-            skip: (Number(page) - 1) * Number(limit),
-            limit: Number(limit),
+            skip: (Number(page) - 1) * Number(newLimit),
+            limit: Number(newLimit),
         }
         const products = await Product.find({}, null, options)
         const totalProducts = await Product.countDocuments({})
-        const totalPages = Math.ceil(totalProducts / Number(limit))
+        const totalPages = Math.ceil(totalProducts / Number(newLimit))
         return res.send({
             items: products,
             pagination: {
                 totalProducts,
                 totalPages,
                 currentPage: Number(page),
-                pageSize: Number(limit),
+                pageSize: Number(newLimit),
             },
         })
     } catch (err) {

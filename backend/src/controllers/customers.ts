@@ -4,6 +4,7 @@ import NotFoundError from '../errors/not-found-error'
 import Order from '../models/order'
 import User, { IUser } from '../models/user'
 import BadRequestError from '../errors/bad-request-error'
+import limitNumber from '../utils/limitNumber'
 
 // TODO: Добавить guard admin
 // eslint-disable-next-line max-len
@@ -32,9 +33,7 @@ export const getCustomers = async (
 
         const filters: FilterQuery<Partial<IUser>> = {}
 
-        if (Number(limit)>10) {
-            return new BadRequestError('уменьшите количество выводимых пользователей')
-        }
+        const newLimit=limitNumber(Number(limit),10);
 
         if (registrationDateFrom) {
             filters.createdAt = {
@@ -121,8 +120,8 @@ export const getCustomers = async (
 
         const options = {
             sort,
-            skip: (Number(page) - 1) * Number(limit),
-            limit: Number(limit),
+            skip: (Number(page) - 1) * Number(newLimit),
+            limit: Number(newLimit),
         }
 
         const users = await User.find(filters, null, options).populate([
@@ -142,7 +141,7 @@ export const getCustomers = async (
         ])
 
         const totalUsers = await User.countDocuments(filters)
-        const totalPages = Math.ceil(totalUsers / Number(limit))
+        const totalPages = Math.ceil(totalUsers / Number(newLimit))
 
         res.status(200).json({
             customers: users,
@@ -150,7 +149,7 @@ export const getCustomers = async (
                 totalUsers,
                 totalPages,
                 currentPage: Number(page),
-                pageSize: Number(limit),
+                pageSize: Number(newLimit),
             },
         })
     } catch (error) {
