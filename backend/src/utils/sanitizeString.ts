@@ -1,5 +1,5 @@
-//npm i sanitize-html
-//npm install -D @types/sanitize-html
+// npm i sanitize-html
+// npm install -D @types/sanitize-html
 
 import sanitizeHtml, { IOptions } from 'sanitize-html';
 

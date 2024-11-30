@@ -36,7 +36,6 @@ type csrfTokenType = {
     isInit: boolean
     promise: Promise<unknown>
 }
-console.log('asdasdasd!!!!')
 class Api {
     private readonly baseUrl: string
     protected options: RequestInit
@@ -46,9 +45,7 @@ class Api {
 
         let resolve: (value: string) => void = () => {}
         let reject: (value: string) => void = () => {}
-        let promise: csrfTokenType['promise']
 
-        console.log('asdasdasd!!!!')
         this.csrfToken = {
             promise: new Promise(() => ''),
             token: '',
@@ -60,7 +57,7 @@ class Api {
                 ...((options.headers as object) ?? {}),
             },
         }
-        promise = new Promise((res, rej) => {
+        const promise: csrfTokenType['promise'] = new Promise((res, rej) => {
             resolve = res
             reject = rej
             this.csrfToken.isInit = true
@@ -69,14 +66,12 @@ class Api {
         this.getCsrfToken
             .call(this)
             .then((CSRFtoken) => {
-                console.log('then csrfToken', CSRFtoken)
                 this.csrfToken.token = CSRFtoken
                 resolve(CSRFtoken)
             })
             .catch(reject)
             .finally(() => {
                 this.csrfToken.isLoading = false
-                console.log(this.csrfToken.token)
             })
     }
 
@@ -97,7 +92,6 @@ class Api {
         try {
             const res = await fetch(`${this.baseUrl}${endpoint}`)
             const {csrfToken} = await this.handleResponse<{ csrfToken: string }>(res)
-            console.log('getCsrfToken', csrfToken);
             return csrfToken
         } catch (error) {
             return Promise.reject(error)
@@ -107,7 +101,6 @@ class Api {
     protected async request<T>(endpoint: string, options: RequestInit) {
         const method = options.method || 'GET'
         try {
-            await this.csrfToken.promise
             if (
                 method.toUpperCase() !== 'GET' ||
                 method.toUpperCase() !== 'DELETE'
@@ -363,7 +356,7 @@ export class WebLarekAPI extends Api implements IWebLarekAPI {
     }
 
     createProduct = async (data: Omit<IProduct, '_id'>) => {
-        console.log(data)
+        //console.log(data)
         return this.requestWithRefresh<IProduct>('/product', {
             method: 'POST',
             body: JSON.stringify(data),

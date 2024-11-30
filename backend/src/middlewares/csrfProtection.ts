@@ -1,6 +1,6 @@
-//npm i csrf-csrf
-import { doubleCsrfOptions } from "../config";
+// npm i csrf-csrf
 import { doubleCsrf } from "csrf-csrf";
+import { doubleCsrfOptions } from "../config";
 
 const {doubleCsrfProtection:csrfProtection, generateToken} = doubleCsrf(doubleCsrfOptions);
 
