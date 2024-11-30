@@ -11,6 +11,10 @@ import escapeRegExp from '../utils/escapeRegExp'
 // eslint-disable-next-line max-len
 // GET /orders?page=2&limit=5&sort=totalAmount&order=desc&orderDateFrom=2024-07-01&orderDateTo=2024-08-01&status=delivering&totalAmountFrom=100&totalAmountTo=1000&search=%2B1
 
+const isString = (some: any[]) => {
+    return some.every((item) => item === undefined || typeof item === 'string')
+}
+
 export const getOrders = async (
     req: Request,
     res: Response,
@@ -36,15 +40,17 @@ export const getOrders = async (
         const filters: FilterQuery<Partial<IOrder>> = {}
 
         if (
-            typeof sortField !== 'string' ||
-            typeof sortOrder !== 'string' ||
-            typeof status !== 'string' ||
-            typeof totalAmountFrom !== 'string' ||
-            typeof totalAmountTo !== 'string' ||
-            typeof totalAmountTo !== 'string' ||
-            typeof orderDateFrom !== 'string' ||
-            typeof orderDateTo !== 'string' ||
-            typeof search !== 'string'
+            !isString([
+                sortField,
+                sortOrder,
+                status,
+                totalAmountFrom,
+                totalAmountTo,
+                totalAmountTo,
+                orderDateFrom,
+                orderDateTo,
+                search,
+            ])
         ) {
             return next(new BadRequestError('некорректный запрос'))
         }
