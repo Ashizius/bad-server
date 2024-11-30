@@ -2,7 +2,8 @@ import { Joi, celebrate } from 'celebrate'
 import { Types } from 'mongoose'
 
 // eslint-disable-next-line no-useless-escape
-export const phoneRegExp = /^(\+\d+)?(?:\s|-?|\(?\d+\)?)+$/
+//export const phoneRegExp = /^(\+\d+)?(?:\s|-?|\(?\d+\)?)+$/
+export const phoneRegExp = /^(\+\d{1,4})?(?:\s|-?|\(?\d{1,3}\)?){1,9}$/
 
 export enum PaymentType {
     Card = 'card',
@@ -32,10 +33,10 @@ export const validateOrderBody = celebrate({
                     'Указано не валидное значение для способа оплаты, возможные значения - "card", "online"',
                 'string.empty': 'Не указан способ оплаты',
             }),
-        email: Joi.string().email().required().messages({
+        email: Joi.string().max(64).message('Поле "email" должно быть короче 64 символов').email().required().messages({
             'string.empty': 'Не указан email',
         }),
-        phone: Joi.string().required().pattern(phoneRegExp).messages({
+        phone: Joi.string().required().max(20).pattern(phoneRegExp).messages({
             'string.empty': 'Не указан телефон',
         }),
         address: Joi.string().required().messages({
@@ -111,6 +112,8 @@ export const validateUserBody = celebrate({
         }),
         email: Joi.string()
             .required()
+            .max(64)
+            .message('Поле "email" должно быть короче 64 символов')
             .email()
             .message('Поле "email" должно быть валидным email-адресом')
             .messages({
@@ -123,6 +126,8 @@ export const validateAuthentication = celebrate({
     body: Joi.object().keys({
         email: Joi.string()
             .required()
+            .max(64)
+            .message('Поле "email" должно быть короче 64 символов')        
             .email()
             .message('Поле "email" должно быть валидным email-адресом')
             .messages({

@@ -9,15 +9,17 @@ import {
     updateCurrentUser,
 } from '../controllers/auth'
 import auth from '../middlewares/auth'
+import { validateAuthentication, validateUserBody } from '../middlewares/validations'
+import sanitizeBody from '../middlewares/sanitizations'
 
 const authRouter = Router()
 
 authRouter.get('/user', auth, getCurrentUser)
-authRouter.patch('/me', auth, updateCurrentUser)
+authRouter.patch('/me', auth, validateUserBody, sanitizeBody(), updateCurrentUser)
 authRouter.get('/user/roles', auth, getCurrentUserRoles)
-authRouter.post('/login', login)
+authRouter.post('/login',validateAuthentication, sanitizeBody(), login)
 authRouter.get('/token', refreshAccessToken)
 authRouter.get('/logout', logout)
-authRouter.post('/register', register)
+authRouter.post('/register',validateUserBody, sanitizeBody(), register)
 
 export default authRouter

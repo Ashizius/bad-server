@@ -1,3 +1,4 @@
+import { DoubleCsrfConfigOptions } from 'csrf-csrf'
 import { CookieOptions } from 'express'
 import ms from 'ms'
 
@@ -22,3 +23,29 @@ export const REFRESH_TOKEN = {
         } as CookieOptions,
     },
 }
+
+export const corsOptions = {
+    origin: 'http://localhost',
+    credentials: true,
+    //optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+const CSRF_SECRET = process.env.CSRF_SECRET
+
+if (!CSRF_SECRET) {
+    console.log('DANGER! no secret provided!', process.env)
+}
+
+export const doubleCsrfOptions:DoubleCsrfConfigOptions = {
+    getSecret: () => process.env.CSRF_SECRET || '___Secret___',
+    cookieName: process.env.CSRF_COOKIE_NAME || '__Host-larek.x-csrf-token',
+    cookieOptions: {
+        sameSite: 'strict',
+        path: '/',
+        secure: process.env.CSRF_COOKIE_IS_SECURE
+            ? process.env.CSRF_COOKIE_IS_SECURE.toUpperCase() === 'TRUE'
+            : true,
+    },
+}
+
+export const isRegenerateCsrfToken: boolean = true
