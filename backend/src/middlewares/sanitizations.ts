@@ -44,3 +44,4 @@ export default function sanitizeBody(specialKeys?: string[]) {
         return next()
     }
 }
+

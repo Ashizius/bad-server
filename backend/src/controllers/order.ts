@@ -6,6 +6,7 @@ import Order, { IOrder } from '../models/order'
 import Product, { IProduct } from '../models/product'
 import User from '../models/user'
 import limitNumber from '../utils/limitNumber'
+import escapeRegExp from '../utils/escapeRegExp'
 
 // eslint-disable-next-line max-len
 // GET /orders?page=2&limit=5&sort=totalAmount&order=desc&orderDateFrom=2024-07-01&orderDateTo=2024-08-01&status=delivering&totalAmountFrom=100&totalAmountTo=1000&search=%2B1
@@ -28,18 +29,32 @@ export const getOrders = async (
             orderDateTo,
             search,
         } = req.query
-
-
-        const newLimit=limitNumber(Number(limit),10);
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!', req.query)
+        // order/all?status[$expr][$function][body]='function%20(status)%20%7B%20return%20status%20%3D%3D%3D%20%22completed%22%20%7D'&status[$expr][$function][lang]=js&status[$expr][$function][args][0]=%24status
+        const newLimit = limitNumber(Number(limit), 10)
 
         const filters: FilterQuery<Partial<IOrder>> = {}
 
+        if (
+            typeof sortField !== 'string' ||
+            typeof sortOrder !== 'string' ||
+            typeof status !== 'string' ||
+            typeof totalAmountFrom !== 'string' ||
+            typeof totalAmountTo !== 'string' ||
+            typeof totalAmountTo !== 'string' ||
+            typeof orderDateFrom !== 'string' ||
+            typeof orderDateTo !== 'string' ||
+            typeof search !== 'string'
+        ) {
+            return next(new BadRequestError('некорректный запрос'))
+        }
+
         if (status) {
             if (typeof status === 'object') {
-                Object.assign(filters, status)
+                return next(new BadRequestError('некорректный запрос')) //Object.assign(filters, status)
             }
             if (typeof status === 'string') {
-                filters.status = status
+                filters.status = escapeRegExp(status)
             }
         }
 
@@ -160,13 +175,11 @@ export const getOrdersCurrentUser = async (
 ) => {
     try {
         const userId = res.locals.user._id
-        
+
         const { search, page = 1, limit = 5 } = req.query
 
+        const newLimit = limitNumber(Number(limit), 10)
 
-
-        const newLimit=limitNumber(Number(limit),10);
-                
         const options = {
             skip: (Number(page) - 1) * Number(newLimit),
             limit: Number(newLimit),

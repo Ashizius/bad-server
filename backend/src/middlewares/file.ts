@@ -58,9 +58,13 @@ const fileFilter = (
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
+    console.log(file.mimetype);
     if (!types.includes(file.mimetype)) {
         return cb(null, false)
     }
+
+    console.log('_req!!!!',_req.headers);
+    console.log(_req.headers);
     /*console.log('_req!!!!',_req.files,_req.file);
     if (
         file.size > fileSizeLimits.maxSize ||
