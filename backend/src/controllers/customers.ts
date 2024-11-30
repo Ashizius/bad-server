@@ -33,7 +33,7 @@ export const getCustomers = async (
         const filters: FilterQuery<Partial<IUser>> = {}
 
         if (Number(limit)>10) {
-            return new BadRequestError('уменьшите количество выводимых пользователей');
+            return new BadRequestError('уменьшите количество выводимых пользователей')
         }
 
         if (registrationDateFrom) {

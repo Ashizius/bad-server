@@ -14,7 +14,7 @@ const getProducts = async (req: Request, res: Response, next: NextFunction) => {
         const { page = 1, limit = 5 } = req.query
 
         if (Number(limit)>20) {
-            return new BadRequestError('уменьшите количество выводимых товаров');
+            return next(new BadRequestError('уменьшите количество выводимых товаров'))
         }
 
         const options = {

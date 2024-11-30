@@ -30,7 +30,7 @@ export const getOrders = async (
 
 
         if (Number(limit)>10) {
-            return new BadRequestError('уменьшите количество выводимых заказов');
+            return next(new BadRequestError('уменьшите количество выводимых заказов'))
         }
 
         const filters: FilterQuery<Partial<IOrder>> = {}
@@ -167,7 +167,7 @@ export const getOrdersCurrentUser = async (
 
 
         if (Number(limit)>10) {
-            return new BadRequestError('уменьшите количество выводимых заказов');
+            return next(new BadRequestError('уменьшите количество выводимых заказов'));
         }
                 
         const options = {
