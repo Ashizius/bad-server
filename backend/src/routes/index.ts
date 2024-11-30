@@ -15,8 +15,8 @@ const router = Router()
 
 router.use('/auth', authRouter)
 router.use('/product', csrfProtection, productRouter)
-router.use('/order', auth, csrfProtection, orderRouter)
-router.use('/upload', auth, csrfProtection, uploadRouter)
+router.use('/order', auth, orderRouter)
+router.use('/upload', auth, uploadRouter)
 router.use('/customers', auth, csrfProtection, roleGuardMiddleware(Role.Admin), customerRouter)
 
 router.use('/csrf-token', sendCsrfToken);
