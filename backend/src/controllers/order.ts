@@ -33,7 +33,7 @@ export const getOrders = async (
             orderDateTo,
             search,
         } = req.query
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!', req.query)
+        // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!', req.query)
         // order/all?status[$expr][$function][body]='function%20(status)%20%7B%20return%20status%20%3D%3D%3D%20%22completed%22%20%7D'&status[$expr][$function][lang]=js&status[$expr][$function][args][0]=%24status
         const newLimit = limitNumber(Number(limit), 10)
 
