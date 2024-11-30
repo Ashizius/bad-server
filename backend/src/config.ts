@@ -73,5 +73,6 @@ export const doubleCsrfOptions: DoubleCsrfConfigOptions = {
 export const isRegenerateCsrfToken: boolean = true
 
 export const fileSizeLimits = {
-    fileSize: Number(process.env.MAX_FILE_SIZE) || 1e6,
+    maxSize: Number(process.env.MAX_FILE_SIZE) || 10e6,
+    minSize: Number(process.env.MIN_FILE_SIZE) || 2e3,
 }

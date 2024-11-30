@@ -25,8 +25,7 @@ const tempDir = join(
         : '../public'
 )
 
-fs.mkdirSync(tempDir, { recursive: true });
-
+fs.mkdirSync(tempDir, { recursive: true })
 
 const storage = multer.diskStorage({
     destination: (
@@ -62,8 +61,14 @@ const fileFilter = (
     if (!types.includes(file.mimetype)) {
         return cb(null, false)
     }
+    if (
+        file.size > fileSizeLimits.maxSize ||
+        file.size < fileSizeLimits.minSize
+    ) {
+        return cb(null, false)
+    }
 
     return cb(null, true)
 }
 
-export default multer({ storage, fileFilter, limits: fileSizeLimits })
+export default multer({ storage, fileFilter /*, limits: fileSizeLimits*/ })
