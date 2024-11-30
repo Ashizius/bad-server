@@ -1,8 +1,8 @@
 import { Request, Express } from 'express'
 import multer, { FileFilterCallback } from 'multer'
-import { join } from 'path'
+import { join, extname } from 'path'
 import { fileSizeLimits } from '../config'
-import path = require('path')
+import fs from 'fs'
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
@@ -18,21 +18,23 @@ const newName = () => {
     ).replace(/[:,.,-]/g, '')
 }
 
+const tempDir = join(
+    __dirname,
+    process.env.UPLOAD_PATH_TEMP
+        ? `../public/${process.env.UPLOAD_PATH_TEMP}`
+        : '../public'
+)
+
+fs.mkdirSync(tempDir, { recursive: true });
+
+
 const storage = multer.diskStorage({
     destination: (
         _req: Request,
         _file: Express.Multer.File,
         cb: DestinationCallback
     ) => {
-        cb(
-            null,
-            join(
-                __dirname,
-                process.env.UPLOAD_PATH_TEMP
-                    ? `../public/${process.env.UPLOAD_PATH_TEMP}`
-                    : '../public'
-            )
-        )
+        cb(null, tempDir)
     },
 
     filename: (
@@ -40,7 +42,7 @@ const storage = multer.diskStorage({
         file: Express.Multer.File,
         cb: FileNameCallback
     ) => {
-        cb(null, newName()+path.extname(file.originalname)) //file.originalname
+        cb(null, newName() + extname(file.originalname)) //file.originalname
     },
 })
 
