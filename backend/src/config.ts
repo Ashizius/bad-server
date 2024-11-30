@@ -25,10 +25,11 @@ export const REFRESH_TOKEN = {
 }
 
 export const corsOptions = {
-    origin: 'http://localhost',
+    origin: process.env.ORIGIN_ALLOW?.split(',')||'http://localhost:*',
     credentials: true,
     //optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
+console.log('!!!!!!!!!!!!!!!!!!!!!corsOptions',corsOptions);
 
 const CSRF_SECRET = process.env.CSRF_SECRET
 
@@ -49,3 +50,5 @@ export const doubleCsrfOptions:DoubleCsrfConfigOptions = {
 }
 
 export const isRegenerateCsrfToken: boolean = true
+
+export const fileSizeLimits= { fileSize: Number(process.env.MAX_FILE_SIZE) || 1e6 };

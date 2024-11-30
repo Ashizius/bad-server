@@ -1,9 +1,11 @@
 import { Request, Express } from 'express'
 import multer, { FileFilterCallback } from 'multer'
 import { join } from 'path'
+import { fileSizeLimits } from '../config'
+
 
 type DestinationCallback = (error: Error | null, destination: string) => void
-type FileNameCallback = (error: Error | null, filename: string) => void
+// type FileNameCallback = (error: Error | null, filename: string) => void
 
 const storage = multer.diskStorage({
     destination: (
@@ -22,13 +24,13 @@ const storage = multer.diskStorage({
         )
     },
 
-    filename: (
+    /* filename: (
         _req: Request,
         file: Express.Multer.File,
         cb: FileNameCallback
     ) => {
         cb(null, file.originalname)
-    },
+    }, */
 })
 
 const types = [
@@ -51,4 +53,4 @@ const fileFilter = (
     return cb(null, true)
 }
 
-export default multer({ storage, fileFilter })
+export default multer({ storage, fileFilter, limits: fileSizeLimits })

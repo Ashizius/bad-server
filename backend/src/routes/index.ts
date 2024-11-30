@@ -13,7 +13,7 @@ import { sendCsrfToken } from '../controllers/sendCsrfToken'
 
 const router = Router()
 
-router.use('/auth', csrfProtection, authRouter)
+router.use('/auth', authRouter)
 router.use('/product', csrfProtection, productRouter)
 router.use('/order', auth, csrfProtection, orderRouter)
 router.use('/upload', auth, csrfProtection, uploadRouter)
