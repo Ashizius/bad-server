@@ -28,6 +28,11 @@ export const getOrders = async (
             search,
         } = req.query
 
+
+        if (Number(limit)>10) {
+            return new BadRequestError('уменьшите количество выводимых заказов');
+        }
+
         const filters: FilterQuery<Partial<IOrder>> = {}
 
         if (status) {
@@ -156,7 +161,15 @@ export const getOrdersCurrentUser = async (
 ) => {
     try {
         const userId = res.locals.user._id
+        
         const { search, page = 1, limit = 5 } = req.query
+
+
+
+        if (Number(limit)>10) {
+            return new BadRequestError('уменьшите количество выводимых заказов');
+        }
+                
         const options = {
             skip: (Number(page) - 1) * Number(limit),
             limit: Number(limit),

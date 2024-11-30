@@ -12,6 +12,11 @@ import movingFile from '../utils/movingFile'
 const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { page = 1, limit = 5 } = req.query
+
+        if (Number(limit)>10) {
+            return new BadRequestError('уменьшите количество выводимых товаров');
+        }
+
         const options = {
             skip: (Number(page) - 1) * Number(limit),
             limit: Number(limit),

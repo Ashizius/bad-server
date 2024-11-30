@@ -3,6 +3,7 @@ import { FilterQuery } from 'mongoose'
 import NotFoundError from '../errors/not-found-error'
 import Order from '../models/order'
 import User, { IUser } from '../models/user'
+import BadRequestError from 'errors/bad-request-error'
 
 // TODO: Добавить guard admin
 // eslint-disable-next-line max-len
@@ -30,6 +31,10 @@ export const getCustomers = async (
         } = req.query
 
         const filters: FilterQuery<Partial<IUser>> = {}
+
+        if (Number(limit)>10) {
+            return new BadRequestError('уменьшите количество выводимых пользователей');
+        }
 
         if (registrationDateFrom) {
             filters.createdAt = {

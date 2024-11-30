@@ -1,5 +1,5 @@
 import { DoubleCsrfConfigOptions } from 'csrf-csrf'
-import e, { CookieOptions } from 'express'
+import /*e,*/ { CookieOptions } from 'express'
 import ms from 'ms'
 
 export const { PORT = '3000' } = process.env
@@ -40,7 +40,17 @@ export const corsOptions = {
     credentials: true,
     //optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
-console.log('!!!!!!!!!!!!!!!!!!!!!corsOptions', corsOptions)
+
+
+
+
+export const rateLimiterOptions = {
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	limit: 10, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+	standardHeaders: true, // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+	// store: ... , // Redis, Memcached, etc. See below.
+}
 
 const CSRF_SECRET = process.env.CSRF_SECRET
 
