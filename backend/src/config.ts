@@ -1,5 +1,5 @@
 import { DoubleCsrfConfigOptions } from 'csrf-csrf'
-import { CookieOptions } from 'express'
+import e, { CookieOptions } from 'express'
 import ms from 'ms'
 
 export const { PORT = '3000' } = process.env
@@ -24,12 +24,23 @@ export const REFRESH_TOKEN = {
     },
 }
 
+let corsOrigin: string | string[]
+if (process.env.ORIGIN_ALLOW) {
+    corsOrigin =
+        process.env.ORIGIN_ALLOW?.indexOf(',') >= 0
+            ? process.env.ORIGIN_ALLOW?.split(',')
+            : process.env.ORIGIN_ALLOW
+} else {
+    corsOrigin = 'http://localhost'
+}
+
 export const corsOptions = {
-    origin: process.env.ORIGIN_ALLOW?.split(',')||'http://localhost:*',
+    //origin: process.env.ORIGIN_ALLOW?.split(',')||'http://localhost',
+    origin: corsOrigin,
     credentials: true,
     //optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
-console.log('!!!!!!!!!!!!!!!!!!!!!corsOptions',corsOptions);
+console.log('!!!!!!!!!!!!!!!!!!!!!corsOptions', corsOptions)
 
 const CSRF_SECRET = process.env.CSRF_SECRET
 
@@ -37,7 +48,7 @@ if (!CSRF_SECRET) {
     console.log('DANGER! no secret provided!', process.env)
 }
 
-export const doubleCsrfOptions:DoubleCsrfConfigOptions = {
+export const doubleCsrfOptions: DoubleCsrfConfigOptions = {
     getSecret: () => process.env.CSRF_SECRET || '___Secret___',
     cookieName: process.env.CSRF_COOKIE_NAME || '__Host-larek.x-csrf-token',
     cookieOptions: {
@@ -51,4 +62,6 @@ export const doubleCsrfOptions:DoubleCsrfConfigOptions = {
 
 export const isRegenerateCsrfToken: boolean = true
 
-export const fileSizeLimits= { fileSize: Number(process.env.MAX_FILE_SIZE) || 1e6 };
+export const fileSizeLimits = {
+    fileSize: Number(process.env.MAX_FILE_SIZE) || 1e6,
+}

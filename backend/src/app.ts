@@ -14,11 +14,13 @@ const { PORT = 3000 } = process.env
 
 const app = express()
 
+
+console.log(corsOptions);
+app.use(cors(corsOptions));
+
 app.use(cookieParser())
 
 
-console.log(corsOptions);
-app.use(cors(corsOptions))
 
 // app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }));
 // app.use(express.static(path.join(__dirname, 'public')));
