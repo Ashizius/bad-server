@@ -4,7 +4,7 @@
   "description": "< Добавьте описание проекта в свободной форме >",
   "main": "dist/app.js",
   "scripts": {
-    "lint": "npx eslint src/**/*.ts",
+    "lint": "npx eslint --fix src/**/*.ts",
     "format": "prettier ./src --write",
     "build": "tsc",
     "dev": "npx nodemon -L src/app.ts ",

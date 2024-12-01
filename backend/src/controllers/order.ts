@@ -7,13 +7,12 @@ import Product, { IProduct } from '../models/product'
 import User from '../models/user'
 import limitNumber from '../utils/limitNumber'
 import escapeRegExp from '../utils/escapeRegExp'
+import { isString } from '../utils/isString'
 
 // eslint-disable-next-line max-len
 // GET /orders?page=2&limit=5&sort=totalAmount&order=desc&orderDateFrom=2024-07-01&orderDateTo=2024-08-01&status=delivering&totalAmountFrom=100&totalAmountTo=1000&search=%2B1
 
-const isString = (some: any[]) => {
-    return some.every((item) => item === undefined || typeof item === 'string')
-}
+
 
 export const getOrders = async (
     req: Request,
@@ -33,7 +32,6 @@ export const getOrders = async (
             orderDateTo,
             search,
         } = req.query
-        // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!', req.query)
         // order/all?status[$expr][$function][body]='function%20(status)%20%7B%20return%20status%20%3D%3D%3D%20%22completed%22%20%7D'&status[$expr][$function][lang]=js&status[$expr][$function][args][0]=%24status
         const newLimit = limitNumber(Number(limit), 10)
 
@@ -57,7 +55,7 @@ export const getOrders = async (
 
         if (status) {
             if (typeof status === 'object') {
-                return next(new BadRequestError('некорректный запрос')) //Object.assign(filters, status)
+                return next(new BadRequestError('некорректный запрос')) // Object.assign(filters, status)
             }
             if (typeof status === 'string') {
                 filters.status = escapeRegExp(status)
