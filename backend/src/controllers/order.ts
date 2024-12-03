@@ -215,7 +215,7 @@ export const getOrdersCurrentUser = async (
             const searchRegex = new RegExp(search as string, 'i')
             const searchNumber = Number(search)
             const products = await Product.find({ title: searchRegex })
-            const productIds = products.map((product) => product._id)
+            const productIds = products.map((product) => product._id  as Types.ObjectId)
 
             orders = orders.filter((order) => {
                 // eslint-disable-next-line max-len
@@ -322,7 +322,7 @@ export const createOrder = async (
             req.body
 
         items.forEach((id: Types.ObjectId) => {
-            const product = products.find((p) => p._id.equals(id))
+            const product = products.find((p) => (p._id as Types.ObjectId).equals(id))
             if (!product) {
                 throw new BadRequestError(`Товар с id ${id} не найден`)
             }
