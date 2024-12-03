@@ -3,8 +3,11 @@ import { FilterQuery } from 'mongoose'
 import NotFoundError from '../errors/not-found-error'
 import Order from '../models/order'
 import User, { IUser } from '../models/user'
+import limitNumber from '../utils/limitNumber'
 
-// TODO: Добавить guard admin
+import { isString } from '../utils/isString'
+import BadRequestError from '../errors/bad-request-error'
+
 // eslint-disable-next-line max-len
 // Get GET /customers?page=2&limit=5&sort=totalAmount&order=desc&registrationDateFrom=2023-01-01&registrationDateTo=2023-12-31&lastOrderDateFrom=2023-01-01&lastOrderDateTo=2023-12-31&totalAmountFrom=100&totalAmountTo=1000&orderCountFrom=1&orderCountTo=10
 export const getCustomers = async (
@@ -29,7 +32,28 @@ export const getCustomers = async (
             search,
         } = req.query
 
+
+        if (
+            !isString([
+                sortField,
+                sortOrder,
+                registrationDateFrom,
+                registrationDateTo,
+                lastOrderDateFrom,
+                lastOrderDateTo,
+                totalAmountFrom,
+                totalAmountTo,
+                orderCountFrom,
+                orderCountTo,
+                search
+            ])
+        ) {
+            return next(new BadRequestError('некорректный запрос'))
+        }
+        
         const filters: FilterQuery<Partial<IUser>> = {}
+
+        const newLimit=limitNumber(Number(limit),10);
 
         if (registrationDateFrom) {
             filters.createdAt = {
@@ -116,8 +140,8 @@ export const getCustomers = async (
 
         const options = {
             sort,
-            skip: (Number(page) - 1) * Number(limit),
-            limit: Number(limit),
+            skip: (Number(page) - 1) * Number(newLimit),
+            limit: Number(newLimit),
         }
 
         const users = await User.find(filters, null, options).populate([
@@ -137,7 +161,7 @@ export const getCustomers = async (
         ])
 
         const totalUsers = await User.countDocuments(filters)
-        const totalPages = Math.ceil(totalUsers / Number(limit))
+        const totalPages = Math.ceil(totalUsers / Number(newLimit))
 
         res.status(200).json({
             customers: users,
@@ -145,7 +169,7 @@ export const getCustomers = async (
                 totalUsers,
                 totalPages,
                 currentPage: Number(page),
-                pageSize: Number(limit),
+                pageSize: Number(newLimit),
             },
         })
     } catch (error) {
